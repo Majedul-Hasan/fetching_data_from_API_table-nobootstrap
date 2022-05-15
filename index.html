@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>jQuery.getJSON demo</title>
+    <style>
+        img {
+            height: 100px;
+            float: left;
+        }
+        table {
+            border-collapse: collapse;
+        }
+        
+        .table {
+            width: 100%;
+            margin-bottom: 1rem;
+            color: #212529;
+        }
+        
+        .table th,
+        .table td {
+            padding: 0.75rem;
+            vertical-align: top;
+            border-top: 1px solid #dee2e6;
+        }
+        
+        .table thead th {
+            vertical-align: bottom;
+            border-bottom: 2px solid #dee2e6;
+        }
+        
+        .table tbody + tbody {
+            border-top: 2px solid #dee2e6;
+        }
+        
+        .text-center {
+            text-align: center !important;
+        }
+        .table-bordered {
+            border: 1px solid #dee2e6;
+        }
+        
+        .table-bordered th,
+        .table-bordered td {
+            border: 1px solid #dee2e6;
+        }
+        
+        .table-bordered thead th,
+        .table-bordered thead td {
+            border-bottom-width: 2px;
+        }
+        .table-bordered th,
+        .table-bordered td {
+            border: 1px solid #dee2e6 !important;
+        }
+        
+        .m-auto {
+            margin: auto !important;
+        }
+        
+        .table-striped tbody tr:nth-of-type(odd) {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+        
+        .mt-4,
+        .my-4 {
+            margin-top: 1.5rem !important;
+        }
+        
+        .w-75 {
+            width: 75% !important;
+        }
+        
+    </style>
+    
+    
+    
+</head>
+<body>
+    
+    <div class="whotable" style="padding-bottom: 20px; margin-top: 20px;">
+        <table class="table text-center table-bordered m-auto table-striped mt-4 w-75 block "  style="padding-bottom: 20px; margin-top: 20px;" >
+            <thead class=' text-center ' style='background-color: #74b1f5;'><tr>
+                <th scope="col"><b>NR</b></th>
+                <th scope="col"><b>AIRCRAFT</b></th>
+                
+                <th scope="col"><b>TYPE</b></th>
+                <th scope="col" colspan="2"><b>TAKEOFF</b></th>
+                <th scope="col" colspan="2"><b>LANDING</b></th>
+                <th scope="col"><b>TIME</b></th>
+                <th scope="col"><b>AGL</b></th>
+                <th scope="col"><b><a href="/checkin/">CREW</a></b></th>
+                <th scope="col"><b>REMARK</b></th>
+                
+            </tr>
+        </thead>
+        
+        <tbody class='container ' ></tbody>
+        
+        
+        
+        
+        <tr>
+            <td colspan="20"><b>TOTALS</b></td></tr>
+            <tr>
+                <td></td><td></td><td></td><td>09:44</td><td></td><td>18:14</td><td></td><td>71:11</td><td>4130m</td><td></td><td>86 FLIGHT(S)</td></tr>
+            </table>
+        </div>
+        
+        
+        
+        <script src="./js/app.js"></script>
+        
+    </body>
+    </html>
