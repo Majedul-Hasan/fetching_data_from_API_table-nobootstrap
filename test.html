@@ -1,0 +1,212 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        .container {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+            padding-top: 56.25%; /* 16:9 Aspect Ratio */
+            background-color: rgba(0, 0, 255, 0.096);
+        }
+        
+        .responsive-iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+            background-color: brown;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    
+    
+    
+    <div class="container"> 
+        <iframe class="responsive-iframe" >
+            <!doctype html>
+            <html lang="en">
+            <head>
+                <meta charset="utf-8">
+                <title>jQuery.getJSON demo</title>
+                <style>
+                    img {
+                        height: 100px;
+                        float: left;
+                    }
+                    table {
+                        border-collapse: collapse;
+                    }
+                    
+                    .table {
+                        width: 100%;
+                        margin-bottom: 1rem;
+                        color: #212529;
+                    }
+                    
+                    .table th,
+                    .table td {
+                        padding: 0.75rem;
+                        vertical-align: top;
+                        border-top: 1px solid #dee2e6;
+                    }
+                    
+                    .table thead th {
+                        vertical-align: bottom;
+                        border-bottom: 2px solid #dee2e6;
+                    }
+                    
+                    .table tbody + tbody {
+                        border-top: 2px solid #dee2e6;
+                    }
+                    
+                    .text-center {
+                        text-align: center !important;
+                    }
+                    .table-bordered {
+                        border: 1px solid #dee2e6;
+                    }
+                    
+                    .table-bordered th,
+                    .table-bordered td {
+                        border: 1px solid #dee2e6;
+                    }
+                    
+                    .table-bordered thead th,
+                    .table-bordered thead td {
+                        border-bottom-width: 2px;
+                    }
+                    .table-bordered th,
+                    .table-bordered td {
+                        border: 1px solid #dee2e6 !important;
+                    }
+                    
+                    .m-auto {
+                        margin: auto !important;
+                    }
+                    
+                    .table-striped tbody tr:nth-of-type(odd) {
+                        background-color: rgba(0, 0, 0, 0.05);
+                    }
+                    
+                    .mt-4,
+                    .my-4 {
+                        margin-top: 1.5rem !important;
+                    }
+                    
+                    .w-75 {
+                        width: 75% !important;
+                    }
+                    
+                </style>
+                
+                
+                
+            </head>
+            <body>
+                
+                <div class="whotable" style="padding-bottom: 20px; margin-top: 20px;">
+                    <table class="table text-center table-bordered m-auto table-striped mt-4 w-75 block "  style="padding-bottom: 20px; margin-top: 20px;" >
+                        <thead class=' text-center ' style='background-color: #74b1f5;'><tr>
+                            <th scope="col"><b>NR</b></th>
+                            <th scope="col"><b>AIRCRAFT</b></th>
+                            
+                            <th scope="col"><b>TYPE</b></th>
+                            <th scope="col" colspan="2"><b>TAKEOFF</b></th>
+                            <th scope="col" colspan="2"><b>LANDING</b></th>
+                            <th scope="col"><b>TIME</b></th>
+                            <th scope="col"><b>AGL</b></th>
+                            <th scope="col"><b><a href="/checkin/">CREW</a></b></th>
+                            <th scope="col"><b>REMARK</b></th>
+                            
+                        </tr>
+                    </thead>
+                    
+                    <tbody class='container ' ></tbody>
+                    
+                    
+                    
+                    
+                    <tr>
+                        <td colspan="20"><b>TOTALS</b></td></tr>
+                        <tr>
+                            <td></td><td></td><td></td><td>09:44</td><td></td><td>18:14</td><td></td><td>71:11</td><td>4130m</td><td></td><td>86 FLIGHT(S)</td></tr>
+                        </table>
+                    </div>
+                    
+                    
+                    
+                    <script >
+                        
+                        
+                        async function getData() {
+                            const API = 'https://ktrax.kisstech.ch/backend/logbook?query_type=ap&id=LSPM&tz=2&dbeg=2022-01-01'
+                            //let url = 'users.json';
+                            try {
+                                let res = await fetch(API);
+                                return await res.json();
+                            } catch (error) {
+                                console.log(error);
+                            }
+                        }
+                        
+                        
+                        async function renderData() {
+                            let data = await getData();
+                            //console.log(data);
+                            const {max_takeoffs, max_dalt, last_ldg, first_tkof, expiry_date, end_date, count, begin_date, query_type, query_canonicalized, num_takeoffs, max_takeoffs_reached, time_zone, t_end, t_begin, sum_dt, sum_dalt, subscription_category, subscribed, sorties} = data
+                            
+                            
+                            let html = '';
+                            sorties.forEach((sortie, i) => {
+                                console.log(sortie, i);
+                                
+                                let htmlSegment = `<tr>
+                                    <td>${i+1}</td>
+                                    <td><a >${sortie?.cs}</a></td>
+                                    
+                                    <td>${sortie?.actype}</td> 
+                                    <td>${sortie?.tkof?.time}</td>
+                                    <td>${sortie?.tkof?.rwy}</td>
+                                    <td>${sortie?.ldg?.time}</td>
+                                    <td>${sortie?.ldg?.rwy}</td>
+                                    <td>${sortie?.dt}</td>
+                                    <td>${sortie?.seqnr}m</td>
+                                    <td> <a>${sortie?.p1?.name}<a/><br/><a>${sortie?.p2?.name}<a/> </td>
+                                        <td> <a>${sortie?.tkof?.loc}<a/> </td>
+                                        </tr>
+                                        `
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        html += htmlSegment;
+                                    });
+                                    
+                                    let container = document.querySelector('.container');
+                                    container.innerHTML = html;
+                                }
+                                
+                                renderData();
+                                
+                                
+                            </script>
+                            
+                        </body>
+                        </html>
+                        
+                        
+                    </iframe>
+                </div>
+                
+            </body>
+            </html>
+            

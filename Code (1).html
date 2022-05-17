@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <style>
+        .container{
+            margin: 0;
+        }
+        thead{
+            background-color: rgb(116,177,245);
+            
+            
+        }
+        
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 1rem;
+            
+        }
+        
+        tbody>tr:last-child td{
+            font-weight: 550;
+            border-top: 2px solid black;
+        }
+        
+    </style>
+</head>
+<body>
+    <script>
+        var snrUrl = "https://ktrax.kisstech.ch/ktrax/?ktraxid=";
+        //var url = "https://ktrax.kisstech.ch/backend/logbook?query_type=ap&id=LSPM&tz=2&dbeg=2020-04-14";
+        var url = "https://ktrax.kisstech.ch/backend/logbook?query_type=ap&id=LSPM&tz=2&dbeg=2020-01-01";
+        fetch(url)
+        .then(function(resp){
+            return resp.json();
+        })
+        .then(function(data){
+            if (typeof data['sorties'] !== 'undefined') {
+                var i=0;
+                var agl = 0;
+                var takeoff = '';
+                var landing = '';
+                var tableData = '';
+                var remarks = '';
+                var date = '';
+                var total = "0:00";
+                var id = '';
+                var tableEnd = ` </tbody>
+            </table>`;
+            
+            var tableHead = `<table class="table table-responsive table-striped">
+                <thead>
+                    <tr>
+                        <th>NR</th>
+                        <th>AIRCRAFT</th>
+                        <th>TYPE</th>
+                        <th colspan="2">TAKEOFF</th>
+                        <th colspan="2">LANDING</th>
+                        <th>TIME</th>
+                        <th>AGL</th>
+                        <th>CREW</th>
+                        <th>REMARK</th>
+                    </tr>
+                </thead>
+                <tbody>`;
+                    
+                    for (let index = 0; index < data['sorties'].length; index++) {
+                        if(date!=data['sorties'][index]['date']){
+                            if(tableData!='' && date!=''){
+                                tableData += "<tr class='flight-total'><td colspan='3'>Total</td><td>";
+                                    //tableData += data['first_tkof'];
+                                    //tableData += takeoff;
+                                    tableData += "</td><td></td><td>";
+                                        //tableData += data['last_ldg'];  
+                                        //tableData += landing; 
+                                        tableData += "</td><td></td><td>";
+                                            //tableData += data['sum_dt'];
+                                            tableData += total;
+                                            tableData += "</td><td>";
+                                                //tableData += data['max_dalt'];
+                                                //tableData += agl;
+                                                tableData += "</td><td></td><td>";
+                                                    //tableData += data['count'];
+                                                    tableData += i + " FLIGHT(S)</td></tr>";
+                                                    
+                                                    
+                                                    document.getElementById('flight-data-wrapper').insertAdjacentHTML("afterbegin", tableHead + tableData + tableEnd);
+                                                    document.getElementById('flight-data-wrapper').insertAdjacentHTML("afterbegin",
+                                                    "<div class='mt-5'><strong class='mt-5'>" + date + "</strong></div>");
+                                                    //document.getElementById('flight-data-wrapper').insertAdjacentHTML("beforeend", tableEnd);
+                                                }
+                                                if(data['sorties'][index]['tkof']['time']!='')
+                                                takeoff = data['sorties'][index]['tkof']['time'];
+                                                tableData='';
+                                                date=data['sorties'][index]['date'];
+                                                agl=0;
+                                                i=0;
+                                                total = "0:00";
+                                            }
+                                            i++;
+                                            tableData += "<tr><td>" + i;
+                                                //tableData += data['sorties'][index]['seqnr'];
+                                                tableData += "</td><td>";
+                                                    tableData += data['sorties'][index]['cs'];
+                                                    tableData += "</td><td>";
+                                                        tableData += data['sorties'][index]['actype'];
+                                                        tableData += "</td><td>";
+                                                            tableData += data['sorties'][index]['tkof']['time'];
+                                                            tableData += "</td><td>";
+                                                                tableData += data['sorties'][index]['tkof']['rwy'];
+                                                                
+                                                                if(data['sorties'][index]['ldg']['time']){
+                                                                    tableData += "</td><td>";
+                                                                        tableData += data['sorties'][index]['ldg']['time'];
+                                                                        tableData += "</td><td>";
+                                                                            tableData += data['sorties'][index]['ldg']['rwy'];
+                                                                        }else{
+                                                                            tableData += "</td><td colspan='2' class='text-center'><a href='"
+                                                                                +snrUrl 
+                                                                                + data['sorties'][index]['id']
+                                                                                + "&mode=sar'>SAR</a>";
+                                                                            }
+                                                                            
+                                                                            tableData += "</td><td>";
+                                                                                tableData += data['sorties'][index]['dt'];
+                                                                                if(data['sorties'][index]['dt']!='')
+                                                                                total = addDurations(total, data['sorties'][index]['dt']);
+                                                                                tableData += "</td><td>";
+                                                                                    tableData += data['sorties'][index]['dalt'];
+                                                                                    agl = Math.max(agl, data['sorties'][index]['dalt']);
+                                                                                    tableData += "m</td><td>";
+                                                                                        tableData += "</td><td>";
+                                                                                            landing = (data['sorties'][index]['ldg']['time']!='' ? data['sorties'][index]['ldg']['time'] : landing);
+                                                                                            
+                                                                                            if(data['sorties'][index]['tkof']['time']=='')
+                                                                                            takeoff = data['sorties'][index]['tkof']['time'];
+                                                                                            
+                                                                                            remarks = '';
+                                                                                            if(data['sorties'][index]['tkof']['loc']!=''){
+                                                                                                remarks += 'TKOF: ' + data['sorties'][index]['tkof']['loc'] + ' ';
+                                                                                            }
+                                                                                            if(data['sorties'][index]['ldg']['loc']!=''){
+                                                                                                if(remarks!='')remarks += "<br>";
+                                                                                                remarks += 'LDG: ' + data['sorties'][index]['ldg']['loc'] + ' ';
+                                                                                            }
+                                                                                            if(data['sorties'][index]['tow_cs']!=''){
+                                                                                                if(remarks!='')remarks += "<br>";
+                                                                                                remarks += 'TOW: ' + data['sorties'][index]['tow_cs'] + ' ';
+                                                                                            }
+                                                                                            
+                                                                                            tableData += remarks
+                                                                                            tableData += "</td></tr>";
+                                                                                        }
+                                                                                        if(tableData!='' && date!=''){
+                                                                                            tableData += "<tr class='flight-total'><td colspan='3'>Total</td><td>";
+                                                                                                //tableData += takeoff;
+                                                                                                tableData += "</td><td></td><td>";
+                                                                                                    //tableData += landing;   
+                                                                                                    tableData+= "</td><td></td><td>";
+                                                                                                        //tableData += data['sum_dt'];
+                                                                                                        tableData += total;
+                                                                                                        tableData += "</td><td>";
+                                                                                                            //tableData += data['max_dalt'];
+                                                                                                            //tableData += agl;
+                                                                                                            tableData += "</td><td></td><td>";
+                                                                                                                //tableData += data['count'];
+                                                                                                                tableData += i + " FLIGHT(S)</td></tr>";
+                                                                                                                
+                                                                                                                
+                                                                                                                document.getElementById('flight-data-wrapper').insertAdjacentHTML("afterbegin", tableHead + tableData + tableEnd);
+                                                                                                                document.getElementById('flight-data-wrapper').insertAdjacentHTML("afterbegin",
+                                                                                                                "<div class='mt-5'><strong>" + date + "</strong></div>");
+                                                                                                            }
+                                                                                                        }
+                                                                                                        
+                                                                                                    });
+                                                                                                    
+                                                                                                    function addDurations(t1, t2)
+                                                                                                    {
+                                                                                                        var time1 = t1.split(':');
+                                                                                                        var time2 = t2.split(":");
+                                                                                                        var h = 0;
+                                                                                                        
+                                                                                                        time1[1] = parseInt(time1[1]) + parseInt(time2[1]);
+                                                                                                        while(parseInt(time1[1])>=60)
+                                                                                                        {
+                                                                                                            h++;
+                                                                                                            time1[1] = parseInt(time1[1])-60;
+                                                                                                        }
+                                                                                                        time1[1] = ("00" + time1[1]).slice(-2);
+                                                                                                        
+                                                                                                        time1[0] = parseInt(time1[0]) + parseInt(time2[0]) + h;
+                                                                                                        return time1.join(":");
+                                                                                                    }
+                                                                                                </script>
+                                                                                                
+                                                                                                <div class="container" id="flight-data-wrapper">
+                                                                                                </div>
+                                                                                            </body>
+                                                                                            </html>
